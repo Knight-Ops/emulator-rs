@@ -1,7 +1,7 @@
-mod decoder;
-mod registers;
+pub mod cpu;
+mod instructions;
 mod mem;
-pub mod CPU;
+mod registers;
 
 #[cfg(test)]
 mod tests {

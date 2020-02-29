@@ -5,8 +5,7 @@ pub trait Mem {
     fn write_byte(&mut self, addr: u32, val: u8);
 
     fn read_word(&self, addr: u32) -> u16 {
-        self.read_byte(addr) as u16 | 
-            (self.read_byte(addr + 1) as u16) << 8
+        self.read_byte(addr) as u16 | (self.read_byte(addr + 1) as u16) << 8
     }
 
     fn write_word(&mut self, addr: u32, val: u16) {
@@ -15,10 +14,10 @@ pub trait Mem {
     }
 
     fn read_dword(&self, addr: u32) -> u32 {
-        (self.read_byte(addr) as u32) | 
-            (self.read_byte(addr + 1) as u32) << 8 | 
-            (self.read_byte(addr + 2) as u32) << 16 | 
-            (self.read_byte(addr + 3) as u32) << 24
+        (self.read_byte(addr) as u32)
+            | (self.read_byte(addr + 1) as u32) << 8
+            | (self.read_byte(addr + 2) as u32) << 16
+            | (self.read_byte(addr + 3) as u32) << 24
     }
 
     fn write_dword(&mut self, addr: u32, val: u32) {
@@ -29,14 +28,15 @@ pub trait Mem {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct RAM {
-    pub inner: Vec<u8>
+    pub inner: Vec<u8>,
 }
 
 impl RAM {
     pub fn new(size: u32) -> Self {
         RAM {
-            inner: vec![0; size as usize]
+            inner: vec![0; size as usize],
         }
     }
 }
@@ -56,15 +56,16 @@ impl DerefMut for RAM {
 }
 
 impl Mem for RAM {
+    // TODO We need to implement memory protections here so we can't read everything
     fn read_byte(&self, addr: u32) -> u8 {
         self.inner[addr as usize]
     }
 
+    // TODO We need to implement memory protections here so we can't read everything
     fn write_byte(&mut self, addr: u32, val: u8) {
         self.inner[addr as usize] = val;
     }
 }
-
 
 #[cfg(test)]
 mod tests {
