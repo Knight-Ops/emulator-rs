@@ -294,8 +294,8 @@ impl Instruction {
                         0b0 => Instruction::ECALL,
                         0b1 => Instruction::EBREAK,
                         _ => panic!(
-                            "Invalid I-Type Instruction while decoding Opcode : {:b}",
-                            opcode
+                            "Invalid I-Type Instruction while decoding Opcode : {:b}\nImm is : {:b}",
+                            opcode, imm
                         ),
                     },
                     0b001 => Instruction::CSRRW(rd, rs1, imm),
@@ -333,7 +333,8 @@ impl Instruction {
     fn auipc(&self, cpu: &mut CPU) {
         if let &Instruction::AUIPC(rd, imm) = self {
             if rd != 0 {
-                cpu.get_registers()[rd as usize] = cpu.get_registers().get_pc() + imm;
+                let (value, overflow) = cpu.get_registers().get_pc().overflowing_add(imm);
+                cpu.get_registers()[rd as usize] = value;
             }
         }
         else {
@@ -546,7 +547,8 @@ impl Instruction {
     fn addi(&self, cpu: &mut CPU) {
         if let &Instruction::ADDI(rd, rs1, imm) = self {
             if rd != 0 {
-                cpu.get_registers()[rd as usize] = cpu.get_registers()[rs1 as usize] + imm;
+                let (value, _) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
+                cpu.get_registers()[rd as usize] = value;
             }
         }
         else {
@@ -655,7 +657,8 @@ impl Instruction {
     fn add(&self, cpu: &mut CPU) {
         if let &Instruction::ADD(rd, rs1, rs2) = self {
             if rd != 0 {
-                cpu.get_registers()[rd as usize] = cpu.get_registers()[rs1 as usize] + cpu.get_registers()[rs2 as usize];
+                let (value, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(cpu.get_registers()[rs2 as usize]);
+                cpu.get_registers()[rd as usize]  = value;
             }
         }
         else {
@@ -666,7 +669,8 @@ impl Instruction {
     fn sub(&self, cpu: &mut CPU) {
         if let &Instruction::SUB(rd, rs1, rs2) = self {
             if rd != 0 {
-                cpu.get_registers()[rd as usize] = cpu.get_registers()[rs1 as usize] - cpu.get_registers()[rs2 as usize];
+                let(value, overflow) = cpu.get_registers()[rs1 as usize].overflowing_sub(cpu.get_registers()[rs2 as usize]);
+                cpu.get_registers()[rd as usize] = value;
             }
         }
         else {

@@ -58,8 +58,11 @@ impl CPU {
 
     pub fn run(&mut self) {
         loop {
+            println!("PC is : {:X}", self.get_registers().get_pc());
             let fetch = self.fetch();
+            println!("Fetch : {:X?}", fetch);
             let decode = self.decode(fetch);
+            println!("Decode : {:X?}", decode);
             self.execute(decode);
         }
     }

@@ -64,7 +64,8 @@ impl RV32Registers {
 
     // This might have a signedness issue when we are adding
     pub fn add_to_pc(&mut self, val: u32) {
-        self.pc += val;
+        let (value, overflow) = self.pc.overflowing_add(val);
+        self.pc = value;
     }
 
     pub fn set_pc(&mut self, val: u32) {
