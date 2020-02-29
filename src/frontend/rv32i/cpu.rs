@@ -47,7 +47,7 @@ impl CPU {
         let mut file = std::fs::File::open(path).unwrap();
         let mut buf = [0u8; 1];
         let mut bytes_read = 1;
-        let mut index = 0;
+        let mut index = 0x40;
 
         while bytes_read != 0 {
             bytes_read = file.read(&mut buf).unwrap();

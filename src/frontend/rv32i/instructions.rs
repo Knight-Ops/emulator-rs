@@ -440,7 +440,7 @@ impl Instruction {
 
     fn lb(&self, cpu: &mut CPU) {
         if let &Instruction::LB(rd, rs1, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let mut val : u32 = cpu.get_memory().read_byte(address) as u32;
             if rd != 0 {
                 if val & 0x80 != 0 {
@@ -456,7 +456,7 @@ impl Instruction {
 
     fn lbu(&self, cpu: &mut CPU) {
         if let &Instruction::LBU(rd, rs1, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow)= cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let mut val : u32 = cpu.get_memory().read_byte(address) as u32;
             if rd != 0 {
                 val = val & 0x0000_00FF;
@@ -470,7 +470,7 @@ impl Instruction {
 
     fn lh(&self, cpu: &mut CPU) {
         if let &Instruction::LH(rd, rs1, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let mut val : u32 = cpu.get_memory().read_word(address) as u32;
             if rd != 0 {
                 if val & 0x8000 != 0 {
@@ -486,7 +486,7 @@ impl Instruction {
 
     fn lhu(&self, cpu: &mut CPU) {
         if let &Instruction::LHU(rd, rs1, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let mut val : u32 = cpu.get_memory().read_word(address) as u32;
             if rd != 0 {
                 val = val & 0x0000_FFFF;
@@ -500,7 +500,7 @@ impl Instruction {
 
     fn lw(&self, cpu: &mut CPU) {
         if let &Instruction::LW(rd, rs1, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let val : u32 = cpu.get_memory().read_dword(address) as u32;
             if rd != 0 {
                 cpu.get_registers()[rd as usize] = val;
@@ -513,7 +513,7 @@ impl Instruction {
 
     fn sb(&self, cpu: &mut CPU) {
         if let &Instruction::SB(rs1, rs2, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let val : u8 = (rs2 as u8) & 0xFF;
             cpu.get_memory().write_byte(address, val);
         }
@@ -524,7 +524,7 @@ impl Instruction {
     
     fn sh(&self, cpu: &mut CPU) {
         if let &Instruction::SH(rs1, rs2, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let val : u16 = (rs2 as u16) & 0xFFFF;
             cpu.get_memory().write_word(address, val);
         }
@@ -534,7 +534,7 @@ impl Instruction {
     }
     fn sw(&self, cpu: &mut CPU) {
         if let &Instruction::SW(rs1, rs2, imm) = self {
-            let address = cpu.get_registers()[rs1 as usize] + imm;
+            let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
             let val : u32 = rs2 & 0xFFFF_FFFF;
             cpu.get_memory().write_dword(address, val);
         }
