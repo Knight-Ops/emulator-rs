@@ -3,10 +3,5 @@ mod instructions;
 mod mem;
 mod registers;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+use cpu::*;
+pub use instructions::DecodeError;

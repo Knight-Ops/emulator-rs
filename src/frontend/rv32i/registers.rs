@@ -1,9 +1,9 @@
-use std::ops::{DerefMut, Deref};
+use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct RV32Registers {
-    inner : [u32; 32],
-    pc : u32,
+    inner: [u32; 32],
+    pc: u32,
     // x0: u32,
     // x1: u32,
     // x2: u32,
