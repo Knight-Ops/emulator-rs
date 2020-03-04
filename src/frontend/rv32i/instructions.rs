@@ -553,11 +553,13 @@ impl Instruction {
     fn sb(&self, cpu: &mut CPU) -> ExecuteResult<ExecuteStatus> {
         if let &Instruction::SB(rs1, rs2, imm) = self {
             let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
-            let val: u8 = (rs2 as u8) & 0xFF;
+            let val: u8 = (cpu.get_registers()[rs2 as usize] as u8) & 0xFF;
             cpu.get_memory().write_byte(address, val)?;
         } else {
             return Err(ExecuteError::InvalidExecutionInstruction);
         }
+
+        println!("{:?}", cpu);
 
         cpu.get_registers().increment_pc();
         Ok(ExecuteStatus::CONTINUE)
@@ -566,7 +568,7 @@ impl Instruction {
     fn sh(&self, cpu: &mut CPU) -> ExecuteResult<ExecuteStatus> {
         if let &Instruction::SH(rs1, rs2, imm) = self {
             let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
-            let val: u16 = (rs2 as u16) & 0xFFFF;
+            let val: u16 = (cpu.get_registers()[rs2 as usize] as u16) & 0xFFFF;
             cpu.get_memory().write_halfword(address, val)?;
         } else {
             return Err(ExecuteError::InvalidExecutionInstruction);
@@ -578,7 +580,7 @@ impl Instruction {
     fn sw(&self, cpu: &mut CPU) -> ExecuteResult<ExecuteStatus> {
         if let &Instruction::SW(rs1, rs2, imm) = self {
             let (address, overflow) = cpu.get_registers()[rs1 as usize].overflowing_add(imm);
-            let val: u32 = rs2 & 0xFFFF_FFFF;
+            let val: u32 = cpu.get_registers()[rs2 as usize] & 0xFFFF_FFFF;
             cpu.get_memory().write_word(address, val)?;
         } else {
             return Err(ExecuteError::InvalidExecutionInstruction);

@@ -161,11 +161,11 @@ impl CPU {
         loop {
             println!("PC is : {:X}", self.get_registers().get_pc());
             let fetch = self.fetch()?;
-            println!("Fetch : {:X?}", fetch);
+            // println!("Fetch : {:X?}", fetch);
             let decode = self.decode(fetch)?;
             println!("Decode : {:X?}", decode);
             if let Ok(CPUStatus::Continue) = self.execute(decode){
-
+                println!("{:?}", self.get_registers())
             } else {
                 return Ok(CPUStatus::Halt)
             }
